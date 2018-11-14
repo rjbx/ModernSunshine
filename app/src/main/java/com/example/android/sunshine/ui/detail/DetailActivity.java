@@ -18,6 +18,7 @@ package com.example.android.sunshine.ui.detail;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
@@ -44,6 +45,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
      * programmatically without cluttering up the code with findViewById.
      */
     private ActivityDetailBinding mDetailBinding;
+    private DetailActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,10 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
         long timestamp = getIntent().getLongExtra(WEATHER_ID_EXTRA, -1);
         Date date = new Date(timestamp);
 
+        mViewModel = ViewModelProviders.of(this).get(DetailActivityViewModel.class);
+        mViewModel.getWeather().observe(this, weatherEntry -> {
+            if (weatherEntry != null) bindWeatherToUI(weatherEntry);
+        });
     }
 
     private void bindWeatherToUI(WeatherEntry weatherEntry) {
