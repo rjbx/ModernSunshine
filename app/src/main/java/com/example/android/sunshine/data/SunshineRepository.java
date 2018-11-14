@@ -20,7 +20,11 @@ import android.util.Log;
 
 import com.example.android.sunshine.AppExecutors;
 import com.example.android.sunshine.data.database.WeatherDao;
+import com.example.android.sunshine.data.database.WeatherEntry;
 import com.example.android.sunshine.data.network.WeatherNetworkDataSource;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 /**
  * Handles data operations in Sunshine. Acts as a mediator between {@link WeatherNetworkDataSource}
@@ -41,9 +45,12 @@ public class SunshineRepository {
                                WeatherNetworkDataSource weatherNetworkDataSource,
                                AppExecutors executors) {
         mWeatherDao = weatherDao;
-        mWeatherNetworkDataSource = weatherNetworkDataSource;
         mExecutors = executors;
-
+        mWeatherNetworkDataSource = weatherNetworkDataSource;
+        LiveData<WeatherEntry[]> networkData = mWeatherNetworkDataSource.getCurrentWeatherForecasts();
+        networkData.observeForever(weatherEntries -> {
+                mExecutors.diskIO().execute(() -> mWeatherDao.bulkInsert(weatherEntries));
+        });
     }
 
     public synchronized static SunshineRepository getInstance(
