@@ -15,9 +15,11 @@
  */
 package com.example.android.sunshine.ui.detail;
 
-import androidx.databinding.DataBindingUtil;
-import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
+
+import android.os.Bundle;
 
 import com.example.android.sunshine.R;
 import com.example.android.sunshine.data.database.WeatherEntry;
@@ -30,7 +32,7 @@ import java.util.Date;
 /**
  * Displays single day's forecast
  */
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements LifecycleOwner {
 
     public static final String WEATHER_ID_EXTRA = "WEATHER_ID_EXTRA";
 
