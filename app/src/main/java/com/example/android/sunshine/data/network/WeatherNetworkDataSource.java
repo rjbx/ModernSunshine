@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.android.sunshine.AppExecutors;
+import com.example.android.sunshine.data.database.WeatherEntry;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -31,6 +32,8 @@ import com.firebase.jobdispatcher.Trigger;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import androidx.lifecycle.MutableLiveData;
+
 /**
  * Provides an API for doing all operations with the server data
  */
@@ -39,23 +42,26 @@ public class WeatherNetworkDataSource {
     public static final int NUM_DAYS = 14;
     private static final String LOG_TAG = WeatherNetworkDataSource.class.getSimpleName();
 
+    private final MutableLiveData<WeatherEntry[]> mDownloadedWeatherForecasts;
+
     // Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
+
     // writing out a bunch of multiplication ourselves and risk making a silly mistake.
     private static final int SYNC_INTERVAL_HOURS = 3;
     private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
     private static final String SUNSHINE_SYNC_TAG = "sunshine-sync";
-
     // For Singleton instantiation
+
     private static final Object LOCK = new Object();
     private static WeatherNetworkDataSource sInstance;
     private final Context mContext;
-
     private final AppExecutors mExecutors;
 
     private WeatherNetworkDataSource(Context context, AppExecutors executors) {
         mContext = context;
         mExecutors = executors;
+        mDownloadedWeatherForecasts = new MutableLiveData<>();
     }
 
     /**
@@ -165,8 +171,7 @@ public class WeatherNetworkDataSource {
                             response.getWeatherForecast()[0].getMin(),
                             response.getWeatherForecast()[0].getMax()));
 
-                    // TODO Finish this method when instructed.
-                    // Will eventually do something with the downloaded data
+                    mDownloadedWeatherForecasts.postValue(response.getWeatherForecast());
                 }
             } catch (Exception e) {
                 // Server probably invalid
@@ -175,4 +180,5 @@ public class WeatherNetworkDataSource {
         });
     }
 
+    public MutableLiveData<WeatherEntry[]> getCurrentWeatherForecasts() { return mDownloadedWeatherForecasts; }
 }
