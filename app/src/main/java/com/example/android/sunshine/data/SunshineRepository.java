@@ -71,7 +71,7 @@ public class SunshineRepository {
         if (mInitialized) return;
         mInitialized = true;
 
-        // TODO Finish this method when instructed
+        startFetchWeatherService();
     }
 
     /**
@@ -100,7 +100,7 @@ public class SunshineRepository {
      */
 
     private void startFetchWeatherService() {
-        // TODO Finish this method when instructed
+        mWeatherNetworkDataSource.startFetchWeatherService();
     }
 
 }
