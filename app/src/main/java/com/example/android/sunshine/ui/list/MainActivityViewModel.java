@@ -2,6 +2,7 @@ package com.example.android.sunshine.ui.list;
 
 import com.example.android.sunshine.data.SunshineRepository;
 import com.example.android.sunshine.data.database.WeatherEntry;
+import com.example.android.sunshine.utilities.SunshineDateUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,7 @@ public class MainActivityViewModel extends ViewModel {
         mSunshineRepository = repository;
     }
 
-    public List<LiveData<WeatherEntry>> getWeather(Date date) {
-        return mSunshineRepository.getWeatherAfterDate(date);
+    public LiveData<List<WeatherEntry>> getWeather() {
+        return mSunshineRepository.getWeatherAfterDate(SunshineDateUtils.getNormalizedUtcDateForToday());
     }
 }

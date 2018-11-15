@@ -19,7 +19,7 @@ public interface WeatherDao {
     LiveData<WeatherEntry> getWeatherByDate(Date date);
 
     @Query("SELECT * FROM weather where date > :date")
-    List<LiveData<WeatherEntry>> getWeatherAfterDate(Date date);
+    LiveData<List<WeatherEntry>> getWeatherAfterDate(Date date);
 
     @Query("SELECT COUNT(DISTINCT date) FROM weather WHERE date < :date")
     int countAllFutureWeather(Date date);

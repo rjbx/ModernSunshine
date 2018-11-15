@@ -120,7 +120,7 @@ public class SunshineRepository {
         return mWeatherDao.getWeatherByDate(date);
     }
 
-    public List<LiveData<WeatherEntry>> getWeatherAfterDate(Date date) {
+    public LiveData<List<WeatherEntry>> getWeatherAfterDate(Date date) {
         initializeData();
         return mWeatherDao.getWeatherAfterDate(date);
     }
