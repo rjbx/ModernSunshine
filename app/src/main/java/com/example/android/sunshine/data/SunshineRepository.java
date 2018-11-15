@@ -48,7 +48,7 @@ public class SunshineRepository {
                                WeatherNetworkDataSource weatherNetworkDataSource,
                                AppExecutors executors) {
         mWeatherDao = weatherDao;
-        mExecutors = executors;
+        mExecutors = executors; // sync database operations away from the main thread
         mWeatherNetworkDataSource = weatherNetworkDataSource;
         LiveData<WeatherEntry[]> networkData = mWeatherNetworkDataSource.getCurrentWeatherForecasts();
         networkData.observeForever(weatherEntries -> {
