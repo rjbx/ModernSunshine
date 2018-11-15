@@ -23,6 +23,8 @@ import com.example.android.sunshine.data.database.WeatherDao;
 import com.example.android.sunshine.data.database.WeatherEntry;
 import com.example.android.sunshine.data.network.WeatherNetworkDataSource;
 
+import java.util.Date;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
@@ -105,9 +107,12 @@ public class SunshineRepository {
     /**
      * Network related operation
      */
-
     private void startFetchWeatherService() {
         mWeatherNetworkDataSource.startFetchWeatherService();
     }
 
+    public LiveData<WeatherEntry> getWeatherByDate(Date date) {
+        initializeData();
+        return mWeatherDao.getWeatherByDate(date);
+    }
 }

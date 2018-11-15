@@ -2,6 +2,7 @@ package com.example.android.sunshine.data.database;
 
 import java.util.Date;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -14,5 +15,5 @@ public interface WeatherDao {
     void bulkInsert(WeatherEntry... weather);
 
     @Query("SELECT * FROM weather where date = :date")
-    WeatherEntry getWeatherByDate(Date date);
+    LiveData<WeatherEntry> getWeatherByDate(Date date);
 }
