@@ -52,8 +52,10 @@ public class SunshineRepository {
         mWeatherNetworkDataSource = weatherNetworkDataSource;
         LiveData<WeatherEntry[]> networkData = mWeatherNetworkDataSource.getCurrentWeatherForecasts();
         networkData.observeForever(weatherEntries -> {
+            mExecutors.diskIO().execute(() -> {
                 deleteOldData();
-                mExecutors.diskIO().execute(() -> mWeatherDao.bulkInsert(weatherEntries));
+                mWeatherDao.bulkInsert(weatherEntries);
+                });
         });
     }
 
