@@ -56,9 +56,7 @@ public class DetailActivity extends AppCompatActivity implements LifecycleOwner 
 
         Date date = SunshineDateUtils.getNormalizedUtcDateForToday();
         DetailViewModelFactory viewModelFactory = InjectorUtils.provideDetailViewModelFactory(this, date);
-        ViewModelProviders.of(this, viewModelFactory).get(DetailActivityViewModel.class);
-
-        mViewModel = ViewModelProviders.of(this).get(DetailActivityViewModel.class);
+        mViewModel = ViewModelProviders.of(this, viewModelFactory).get(DetailActivityViewModel.class);
         mViewModel.getWeather().observe(this, weatherEntry -> {
             if (weatherEntry != null) bindWeatherToUI(weatherEntry);
         });
