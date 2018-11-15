@@ -18,32 +18,43 @@ package com.example.android.sunshine.ui.list;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.android.sunshine.R;
+import com.example.android.sunshine.data.database.WeatherEntry;
 import com.example.android.sunshine.ui.detail.DetailActivity;
+import com.example.android.sunshine.ui.detail.DetailActivityViewModel;
+import com.example.android.sunshine.ui.detail.DetailViewModelFactory;
+import com.example.android.sunshine.utilities.InjectorUtils;
+import com.example.android.sunshine.utilities.SunshineDateUtils;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
  * Displays a list of the next 14 days of forecasts
  */
-public class MainActivity extends AppCompatActivity implements
-        ForecastAdapter.ForecastAdapterOnItemClickHandler {
+public class MainActivity extends AppCompatActivity
+        implements LifecycleOwner, ForecastAdapter.ForecastAdapterOnItemClickHandler {
 
     private ForecastAdapter mForecastAdapter;
     private RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
     private ProgressBar mLoadingIndicator;
+    private MainActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
+
 
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
@@ -75,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements
          * right-to-left layout.
          */
         LinearLayoutManager layoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+                new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
 
         /* setLayoutManager associates the LayoutManager we created above with our RecyclerView */
         mRecyclerView.setLayoutManager(layoutManager);
@@ -102,6 +113,13 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setAdapter(mForecastAdapter);
         showLoading();
 
+        MainViewModelFactory viewModelFactory = InjectorUtils.provideMainViewModelFactory(this);
+        mViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel.class);
+
+        mViewModel.getWeather().observe(this, weatherEntries -> {
+            mForecastAdapter.swapForecast(weatherEntries);
+            showWeatherDataView();
+        });
     }
 
     /**

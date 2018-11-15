@@ -25,6 +25,7 @@ import com.example.android.sunshine.data.network.WeatherNetworkDataSource;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 
 import java.util.Date;
+import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -48,7 +49,7 @@ public class SunshineRepository {
                                WeatherNetworkDataSource weatherNetworkDataSource,
                                AppExecutors executors) {
         mWeatherDao = weatherDao;
-        mExecutors = executors;
+        mExecutors = executors; // sync database operations away from the main thread
         mWeatherNetworkDataSource = weatherNetworkDataSource;
         LiveData<WeatherEntry[]> networkData = mWeatherNetworkDataSource.getCurrentWeatherForecasts();
         networkData.observeForever(weatherEntries -> {
@@ -117,5 +118,10 @@ public class SunshineRepository {
     public LiveData<WeatherEntry> getWeatherByDate(Date date) {
         initializeData();
         return mWeatherDao.getWeatherByDate(date);
+    }
+
+    public LiveData<List<WeatherEntry>> getWeatherAfterDate(Date date) {
+        initializeData();
+        return mWeatherDao.getWeatherAfterDate(date);
     }
 }
