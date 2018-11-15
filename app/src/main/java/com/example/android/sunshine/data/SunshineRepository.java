@@ -25,6 +25,7 @@ import com.example.android.sunshine.data.network.WeatherNetworkDataSource;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 
 import java.util.Date;
+import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -117,5 +118,10 @@ public class SunshineRepository {
     public LiveData<WeatherEntry> getWeatherByDate(Date date) {
         initializeData();
         return mWeatherDao.getWeatherByDate(date);
+    }
+
+    public List<LiveData<WeatherEntry>> getWeatherAfterDate(Date date) {
+        initializeData();
+        return mWeatherDao.getWeatherAfterDate(date);
     }
 }

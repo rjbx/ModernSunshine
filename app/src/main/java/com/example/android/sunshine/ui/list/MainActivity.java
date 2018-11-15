@@ -18,6 +18,8 @@ package com.example.android.sunshine.ui.list;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
@@ -25,6 +27,9 @@ import android.widget.ProgressBar;
 
 import com.example.android.sunshine.R;
 import com.example.android.sunshine.ui.detail.DetailActivity;
+import com.example.android.sunshine.ui.detail.DetailActivityViewModel;
+import com.example.android.sunshine.ui.detail.DetailViewModelFactory;
+import com.example.android.sunshine.utilities.InjectorUtils;
 
 import java.util.Date;
 
@@ -32,18 +37,22 @@ import java.util.Date;
 /**
  * Displays a list of the next 14 days of forecasts
  */
-public class MainActivity extends AppCompatActivity implements
-        ForecastAdapter.ForecastAdapterOnItemClickHandler {
+public class MainActivity extends AppCompatActivity
+        implements LifecycleOwner, ForecastAdapter.ForecastAdapterOnItemClickHandler {
 
     private ForecastAdapter mForecastAdapter;
     private RecyclerView mRecyclerView;
     private int mPosition = RecyclerView.NO_POSITION;
     private ProgressBar mLoadingIndicator;
+    private MainActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast);
+
+        MainViewModelFactory viewModelFactory = InjectorUtils.provideMainViewModelFactory(this);
+        mViewModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityViewModel.class);
 
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
